@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "csstools.postcss",
+    "streetsidesoftware.code-spell-checker",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+    "usernamehw.errorlens",
+    "dsznajder.es7-react-js-snippets",
+    "dbaeumer.vscode-eslint",
+    "antfu.file-nesting",
+    "sleistner.vscode-fileutils",
+    "mhutchie.git-graph",
+    "maattdd.gitless",
+    "antfu.goto-alias",
+    "lokalise.i18n-ally",
+    "quicktype.quicktype",
+    "antfu.pnpm-catalog-lens",
+    "esbenp.prettier-vscode",
+    "gruntfuggly.todo-tree",
+    "bradlc.vscode-tailwindcss"
+  ]
+}
