@@ -13,7 +13,7 @@ import { useChangeLanguage } from "remix-i18next/react";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { useTranslation } from "react-i18next";
-import i18n from "~/i18n.server";
+import { i18nInitOptions } from "~/i18n";
 import { locales } from "~/i18n";
 
 export const links: Route.LinksFunction = () => [
@@ -29,10 +29,12 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const locale = await i18n.getLocale(request);
-
-  return data({ locale });
+export async function clientLoader({ request }: Route.LoaderArgs) {
+  return data({
+    locale:
+      new URL(request.url).searchParams.get(changeLanguageKey) ||
+      i18nInitOptions.fallbackLng,
+  });
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
