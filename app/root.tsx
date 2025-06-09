@@ -29,6 +29,44 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+function I18nHTML({ children }: { children: React.ReactNode }) {
+  const { i18n } = useTranslation();
+
+  return (
+    <html lang={i18n.language} dir={i18n.dir()}>
+      {children}
+    </html>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <I18nHTML>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+      </head>
+      <body>
+        <div
+          // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          Loading...
+        </div>
+        <Scripts />
+      </body>
+    </I18nHTML>
+  );
+}
+
+const changeLanguageKey = "lng";
+
 export async function clientLoader({ request }: Route.LoaderArgs) {
   return data({
     locale:
@@ -37,11 +75,11 @@ export async function clientLoader({ request }: Route.LoaderArgs) {
   });
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const { i18n } = useTranslation();
+export default function Root({ loaderData }: Route.ComponentProps) {
+  useChangeLanguage(loaderData.locale);
 
   return (
-    <html lang={i18n.language} dir={i18n.dir()}>
+    <I18nHTML>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -49,19 +87,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <ChangeLanguage />
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
       </body>
-    </html>
+    </I18nHTML>
   );
 }
 
-const changeLanguageKey = "lng";
-
-export default function App({ loaderData }: Route.ComponentProps) {
-  useChangeLanguage(loaderData.locale);
-
+function ChangeLanguage() {
   const links = Array.from(Object.entries(locales), ([locale, info], key) => ({
     label: info.name,
     to: {
@@ -71,21 +106,17 @@ export default function App({ loaderData }: Route.ComponentProps) {
   })) satisfies Array<{ label: string; to: To; key: number }>;
 
   return (
-    <>
-      <section>
-        <h3 className="text-2xl">search params</h3>
+    <section>
+      <h3 className="text-2xl">search params</h3>
 
-        <ul>
-          {links.map((i) => (
-            <li key={i.key}>
-              <Link to={i.to}>{i.label}</Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <Outlet />
-    </>
+      <ul>
+        {links.map((i) => (
+          <li key={i.key}>
+            <Link to={i.to}>{i.label}</Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -106,14 +137,26 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      )}
-    </main>
+    <I18nHTML>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <main className="container mx-auto p-4 pt-16">
+          <h1>{message}</h1>
+          <p>{details}</p>
+          {stack && (
+            <pre className="w-full overflow-x-auto p-4">
+              <code>{stack}</code>
+            </pre>
+          )}
+        </main>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </I18nHTML>
   );
 }
