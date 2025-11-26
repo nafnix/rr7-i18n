@@ -6,7 +6,7 @@ import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import type { RenderToPipeableStreamOptions } from "react-dom/server";
 import { renderToPipeableStream } from "react-dom/server";
-import i18n, { i18nServerInitOptions } from "~/i18n.server";
+import { i18nServerInitOptions } from "~/i18n.server";
 import { createInstance } from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import Backend from "i18next-fs-backend";
@@ -23,13 +23,18 @@ export default async function handleRequest(
   // loadContext: unstable_RouterContextProvider
 ) {
   const instance = createInstance();
-  const lng = await i18n.getLocale(request);
-  const ns = i18n.getRouteNamespaces(routerContext);
 
+  // const lng = await i18n.getLocale(request);
+  // const ns = i18n.getRouteNamespaces(routerContext);
+  const lng = new URL(request.url).searchParams.get("lng") || undefined;
+  console.log(lng);
   await instance
     .use(initReactI18next)
     .use(Backend)
-    .init({ ...i18nServerInitOptions, lng, ns });
+    .init({
+      ...i18nServerInitOptions,
+      lng,
+    });
 
   const result = new Promise((resolve, reject) => {
     let shellRendered = false;

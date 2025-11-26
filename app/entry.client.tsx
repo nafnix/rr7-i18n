@@ -5,7 +5,7 @@ import { hydrateRoot } from "react-dom/client";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import { HydratedRouter } from "react-router/dom";
 import I18nextBrowserLanguageDetector from "i18next-browser-languagedetector";
-import { getInitialNamespaces } from "remix-i18next/client";
+// import { getInitialNamespaces } from "remix-i18next/client";
 import { i18nInitOptions } from "./i18n";
 
 async function main() {
@@ -15,7 +15,7 @@ async function main() {
     .use(I18nextBrowserLanguageDetector)
     .init({
       ...i18nInitOptions,
-      ns: getInitialNamespaces(),
+      // ns: getInitialNamespaces(),
       detection: { order: ["htmlTag"], caches: [] },
     });
 

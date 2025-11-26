@@ -7,9 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  Link,
 } from "react-router";
-import { useChangeLanguage } from "remix-i18next/react";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { useTranslation } from "react-i18next";
@@ -75,9 +73,7 @@ export async function clientLoader({ request }: Route.LoaderArgs) {
   });
 }
 
-export default function Root({ loaderData }: Route.ComponentProps) {
-  useChangeLanguage(loaderData.locale);
-
+export default function Root() {
   return (
     <I18nHTML>
       <head>
@@ -97,22 +93,33 @@ export default function Root({ loaderData }: Route.ComponentProps) {
 }
 
 function ChangeLanguage() {
+  const { i18n } = useTranslation();
   const links = Array.from(Object.entries(locales), ([locale, info], key) => ({
     label: info.name,
     to: {
       search: new URLSearchParams([[changeLanguageKey, locale]]).toString(),
     },
+    value: locale,
     key,
   })) satisfies Array<{ label: string; to: To; key: number }>;
 
+  function onClick(locale: string) {
+    return () => i18n.changeLanguage(locale);
+  }
   return (
     <section>
-      <h3 className="text-2xl">search params</h3>
+      <h3 className="text-2xl">Select language</h3>
 
       <ul>
         {links.map((i) => (
           <li key={i.key}>
-            <Link to={i.to}>{i.label}</Link>
+            <button
+              type="button"
+              onClick={onClick(i.value)}
+              className="cursor-pointer"
+            >
+              {i.label}
+            </button>
           </li>
         ))}
       </ul>
