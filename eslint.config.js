@@ -50,5 +50,5 @@ export default defineConfig(
     reactPerfPlugin.configs.flat.recommended,
   ],
   { ignores: [".react-router"] },
-  compat.extends("prettier"),
+  ...compat.extends("prettier"),
 );
