@@ -45,10 +45,10 @@ export default defineConfig(
       language: "markdown/gfm",
       extends: ["markdown/recommended"],
     },
-    reactHooks.configs["recommended-latest"],
+    reactHooks.configs.flat["recommended-latest"],
     // reactRefresh.configs.recommended,
     reactPerfPlugin.configs.flat.recommended,
   ],
   { ignores: [".react-router"] },
-  ...compat.extends("prettier"),
+  compat.extends("prettier"),
 );
